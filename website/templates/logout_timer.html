@@ -1,0 +1,20 @@
+<!-- logout_timer.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logout Timer</title>
+    <script>
+        // JavaScript for the timed redirect
+        setTimeout(function() {
+            window.location.href = "{{ url_for('auth.logout') }}";
+        }, 5000);  // Redirect after 5 seconds (5000 milliseconds)
+    </script>
+    <!-- Add any CSS or meta tags as needed -->
+</head>
+<body>
+    <h1>Logging Out...</h1>
+    <p>You will be logged out in 5 seconds...</p>
+    <!-- You can add more content or styling here -->
+</body>
+</html>

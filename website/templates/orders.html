@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orders</title>
+  <link rel="stylesheet" href="/project_static/css/orders.css">
+</head>
+<body {% if current_user and current_user.theme %} class="dark-mode"{% endif %}>
+  
+  <div class="navbar">
+
+    <div class="logout-div">
+      <a href="{{ url_for('auth.logout')}}">Logout</a>
+    </div>
+    <div class="post-div">
+      <a href="{{ url_for('vendor.post', username=username) }}">Post</a>
+    </div>
+    <div class="sales-div">
+      <a href="{{ url_for('vendor.sales', username=username) }}">Sales</a>
+    </div>
+    <div class="orders-div">
+      <a href="{{ url_for('vendor.orders', username=username) }}">Orders</a>
+    </div>
+    <div class="account-div">
+      <a href="{{ url_for('vendor.account', username=username) }}">Account</a>
+    </div>
+    <div class="vendorpage-div">
+      <a href="{{ url_for('vendor.vendorpage', username=username) }}">Home</a>
+    </div>
+
+  </div>
+
+  <div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        {% if category == 'error' %}
+          <div class="flash-message error">
+            <div>
+              <img src="/project_static/icons/error_flash.png" alt="Error Flash PNG">
+              <h3>Error!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'success' %}
+          <div class="flash-message success">
+            <div>
+              <img src="/project_static/icons/success_flash.png" alt="Success Flash PNG">
+              <h3>Success!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'warning' %}
+          <div class="flash-message warning">
+            <div>
+              <img src="/project_static/icons/warning_flash.png" alt="Warning Flash PNG">
+              <h3>Warning!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <div class="container">
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Buyer</th>
+          <th>Phone Number</th>
+          <th>Order Date</th>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Total Price</th>
+          <th>Status</th>
+          <th>Address</th>
+          <th>City</th>
+          <th>State</th>
+          <th>Country</th>
+          <th>Zipcode</th>
+          <th>Card Number</th>
+          <th>Card Holder</th>
+          <th>Expiration Date</th>
+          <th>Card CVV</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+          {% if order.order_status != 'delivered' %}
+            <tr>
+              <td>{{ order.id }}</td>
+              <td>{{ order.purchaser.username }}</td>
+              <td>{{ order.phone_number }}</td>
+              <td>{{ order.order_date }}</td>
+              <td>
+                {% for order_item in order.order_items %}
+                  {% if order_item.vendor_id == current_user.id %}
+                    {% set post = Post.query.get(order_item.post_id) %}
+                    {% if post %}
+                      {{ post.title }}
+                      <br>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              </td>
+              <td>
+                {% for order_item in order.order_items %}
+                  {% if order_item.vendor_id == current_user.id %}
+                    {{ order_item.quantity }}
+                    <br>
+                  {% endif %}
+                {% endfor %}
+              </td>
+              <td>
+                {% for order_item in order.order_items %}
+                  {% if order_item.vendor_id == current_user.id %}
+                    {% set post = Post.query.get(order_item.post_id) %}
+                    {% if post %}
+                      {% set item_total = post.price * order_item.quantity %}
+                      ${{ item_total }}
+                      <br>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              </td>          
+              <td>
+                <!-- Create a form for updating order status -->
+                <form class="status-form" action="{{ url_for('vendor.update_order_status', username=username, order_id=order.id) }}" method="post">
+                  <!-- Use a select dropdown to update order status -->
+                  <select name="new_status">
+                    <option value="pending" {% if order.order_status == 'pending' %} selected {% endif %}>Pending</option>
+                    <option value="processing" {% if order.order_status == 'processing' %} selected {% endif %}>Processing</option>
+                    <option value="shipped" {% if order.order_status == 'shipped' %} selected {% endif %}>Shipped</option>
+                    <option value="delivered" {% if order.order_status == 'delivered' %} selected {% endif %}>Delivered</option>
+                    <!-- Add more options as needed -->
+                  </select>
+                  <!-- Add a submit button to update -->
+                  <button type="submit">Update</button>
+                </form>
+              </td>
+              <td>{{ order.shipping_address }}</td>
+              <td>{{ order.shipping_city }}</td>
+              <td>{{ order.shipping_state }}</td>
+              <td>{{ order.shipping_country }}</td>
+              <td>{{ order.shipping_zipcode }}</td>
+              <td>{{ order.card_number }}</td>
+              <td>{{ order.card_holder }}</td>
+              <td>{{ order.card_expiry_date }}</td>
+              <td>{{ order.card_cvv }}</td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

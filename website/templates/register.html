@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register</title>
+  <link rel="stylesheet" href="/project_static/css/register.css">
+</head>
+<body>
+
+  <div class="logo">
+    <img src="/project_static/icons/vendify_logo.png" alt="Vendify Logo">
+  </div>
+
+  <div class="register-form-div">
+    <div class="form-shadow-box">
+      <h3>Sign Up with Vendify</h3>
+      <form class="register-form-form" method="post" action="{{ url_for('auth.register') }}" enctype="multipart/form-data">
+        <input type="text" id="username" name="username" placeholder="Username">
+        <input type="password" id="password1" name="password1" placeholder="Password">
+        <input type="password" id="password2" name="password2" placeholder="Confirm Password">
+        <div class="flash-container">
+          {% for message in get_flashed_messages() %}
+            <div class="flash-message {% if 'All fields are required' in message %}error{% elif 'Inactive account' in message or 'Invalid username or password' in message or 'Passwords do not match' in message or 'User already exists' in message %}error{% else %}success{% endif %}">
+              {% if 'Inactive account' in message or 'Invalid username or password' in message or 'Passwords do not match' in message or 'User already exists' in message or 'All fields are required' in message %}
+                <img src="/project_static/icons/error_flash.png" alt="Error Flash PNG">
+              {% else %}
+                <img src="/project_static/icons/success_flash.png" alt="Success Flash PNG">
+              {% endif %}
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+        <button type="submit">Sign Up</button>
+      </form>
+      <div class="login-button-box">
+        <h5>Already have an account?</h5><a href="{{ url_for('auth.login') }}">Login</a>
+      </div>
+    </div>
+  </div>
+  
+</body>
+</html>

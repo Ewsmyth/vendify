@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account</title>
+  <link rel="stylesheet" href="/project_static/css/account.css">
+</head>
+<body {% if current_user and current_user.theme %} class="dark-mode"{% endif %}>
+  <h1 class="header">Edit your account</h1>
+
+  <div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        {% if category == 'error' %}
+          <div class="flash-message error">
+            <div>
+              <img src="/project_static/icons/error_flash.png" alt="Error Flash PNG">
+              <h3>Error!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'success' %}
+          <div class="flash-message success">
+            <div>
+              <img src="/project_static/icons/success_flash.png" alt="Success Flash PNG">
+              <h3>Success!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'warning' %}
+          <div class="flash-message warning">
+            <div>
+              <img src="/project_static/icons/warning_flash.png" alt="Warning Flash PNG">
+              <h3>Warning!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <div class="navbar">
+
+    <div class="home-div">
+      <a href="{{ url_for('user.home', username=username) }}"></a>
+    </div>
+    <div class="cart-div">
+      <a href="{{ url_for('user.cart', username=username) }}"></a>
+    </div>
+    <div class="account-div">
+      <a href="{{ url_for('user.account', username=username) }}"></a>
+    </div>
+
+  </div>
+  
+  <div class="theme-box">
+    <h2>Theme:</h2>
+    <form id="themeForm" method="POST" action="{{ url_for('user.update_theme', username=username) }}">
+      <div class="checkbox-wrapper-34">
+        <input class='tgl tgl-ios' id='toggle-34' type='checkbox' {% if user.theme %}checked{% endif %} name="theme_preference" value="1" onchange="document.getElementById('themeForm').submit()">
+        <label class='tgl-btn' for='toggle-34'></label>
+      </div>
+    </form>
+  </div>
+  
+  <div class="change-username-div">
+    <h2>Change Username:</h2>
+    <form class="change-username-form" action="{{ url_for('user.change_username', username=username) }}" method="POST">
+      <input type="text" id="usernameInput" name="new_username" placeholder="Enter new username...">
+      <input type="submit" id="submitBtnUsername" value="Save" style="display: none;">
+    </form>
+  </div>
+  
+  <div class="change-password-div">
+    <h2>Change Password:</h2>
+    <form class="change-password-form" action="{{ url_for('user.change_password', username=username) }}" method="POST" id="passwordForm">
+      <div class="form-inputs-div">
+        <input type="password" name="current_password" id="current_password" placeholder="Current password" required>
+        <input type="password" name="new_password" id="new_password" placeholder="New password" required>
+        <input type="password" name="confirm_new_password" id="confirm_new_password" placeholder="Confirm new password" required>
+      </div>
+      <input type="submit" value="Save" id="submitBtnPassword" style="display: none;" disabled>
+    </form>
+  </div>
+
+  <div class="logout-div">
+    <h2>Logout:</h2>
+    <button><a href="{{ url_for('auth.logout') }}">Logout</a></button>
+  </div>
+
+  <div class="deactivate-account-div">
+    <h2>Deactivate Account:</h2>
+    <form action="{{ url_for('user.deactivate_account', username=username) }}" method="POST" id="deactivateForm">
+      <input type="submit" value="Deactivate" id="deactivateBtn">
+    </form>
+  </div>
+
+  <script src="/project_static/js/account.js"></script>
+
+</body>
+</html>

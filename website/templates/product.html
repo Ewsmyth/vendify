@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product</title>
+  <link rel="stylesheet" href="/project_static/css/product.css">
+</head>
+<body {% if current_user and current_user.theme %} class="dark-mode"{% endif %}>
+    
+  <div class="banner-top">
+    <a href="{{ url_for('user.home', username=username) }}"></a>
+    <h1 class="scrolling-text">{{ post.title }}</h1>
+  </div>
+
+  <div class="content-container">
+
+    <div class="flash-container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          {% if category == 'error' %}
+            <div class="flash-message error">
+              <div>
+                <img src="/project_static/icons/error_flash.png" alt="Error Flash PNG">
+                <h3>Error!</h3>{{ message }}
+              </div>
+              <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+          {% elif category == 'success' %}
+            <div class="flash-message success">
+              <div>
+                <img src="/project_static/icons/success_flash.png" alt="Success Flash PNG">
+                <h3>Success!</h3>{{ message }}
+              </div>
+              <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+          {% elif category == 'warning' %}
+            <div class="flash-message warning">
+              <div>
+                <img src="/project_static/icons/warning_flash.png" alt="Warning Flash PNG">
+                <h3>Warning!</h3>{{ message }}
+              </div>
+              <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endwith %}
+    </div>
+
+    <div class="product-content">
+
+      {% if post %}
+
+        <p class="post-title">{{ post.title }}</p>
+
+        <div class="slider">
+
+          <div class="prevButton" id="prevButton" onclick="prevSlide()"></div>
+          <div class="nextButton" id="nextButton" onclick="nextSlide()"></div>
+      
+          {% if post.cover_photo_url.endswith(('.jpg', '.jpeg', '.png', '.PNG', '.gif')) %}
+            <div class="slide">
+              <img src="/uploads/{{ post.cover_photo_url }}" alt="Cover Photo" class="media">
+            </div>
+          {% endif %}
+      
+          {% for media in post.media %}
+            {% if media.media_url.endswith(('.jpg', '.jpeg', '.png', '.PNG', '.gif', '.mp4', '.webm', '.ogg')) %}
+
+              <div class="slide">
+                {% if media.media_url.endswith(('.jpg', '.jpeg', '.png', '.PNG', '.gif')) %}
+                  <img src="/uploads/{{ media.media_url }}" alt="Image" class="media">
+                {% elif media.media_url.endswith(('.mp4', '.webm', '.ogg')) %}
+                  <video class="media" controls>
+                    <source src="/uploads/{{ media.media_url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                {% endif %}
+              </div>
+
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="price-quantity-div">
+          <p class="post-price">${{ post.price }}</p>
+          <p class="post-quantity">{{ post.quantity }} In stock</p>
+        </div>
+
+        <div class="description-div">
+          <p class="post-description" id="expandableText">{{ post.description }}</p>
+          <button id="toggleButton">Show more</button>
+        </div>
+
+        <div class="cart-div">
+          {% if in_cart %}
+            <form action="{{ url_for('user.remove_from_cart', username=username, post_id=post.id) }}" method="POST">
+              <button type="submit">Remove from Cart</button>
+            </form>
+          {% else %}
+            <form action="{{ url_for('user.add_to_cart', username=username, post_id=post.id) }}" method="POST">
+              <button type="submit">Add to Cart</button>
+            </form>
+          {% endif %}
+        </div>
+
+        <div class="vendor-div">
+          <p class="post-author-username">Vendor: {{ post.author.username }}</p>
+        </div>
+      {% else %}
+        <p>Product not found.</p>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <script src="/project_static/js/product.js"></script>
+
+</body>
+</html>

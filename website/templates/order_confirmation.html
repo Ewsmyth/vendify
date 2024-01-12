@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation</title>
+  <link rel="stylesheet" href="/project_static/css/order_confirmation.css">
+</head>
+<body {% if current_user and current_user.theme %} class="dark-mode"{% endif %}>
+
+  <div class="banner-top">
+    <a href="{{ url_for('user.cart', username=username) }}"></a>
+    <h1>Order Confirmation</h1>
+  </div>
+
+  <div class="content-container">
+
+    <div class="flash-container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          {% if category == 'error' %}
+            <div class="flash-message error">
+              <div>
+                <img src="/project_static/icons/error_flash.png" alt="Error Flash PNG">
+                <h3>Error!</h3>{{ message }}
+              </div>
+              <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+          {% elif category == 'success' %}
+            <div class="flash-message success">
+              <div>
+                <img src="/project_static/icons/success_flash.png" alt="Success Flash PNG">
+                <h3>Success!</h3>{{ message }}
+              </div>
+              <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+          {% elif category == 'warning' %}
+            <div class="flash-message warning">
+              <div>
+                <img src="/project_static/icons/warning_flash.png" alt="Warning Flash PNG">
+                <h3>Warning!</h3>{{ message }}
+              </div>
+              <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endwith %}
+    </div>
+
+    <form action="{{ url_for('user.complete_purchase', username=username) }}" method="POST">
+
+      <div class="ship-pay-info">
+        <div class="shipping-address-div">
+          <label for="shipping_address">Address:</label>
+          <input type="text" id="shipping_address" name="shipping_address" placeholder="123 Main St" required/>
+        </div>
+        <div class="shipping-city-div">
+          <label for="shipping_city">City:</label>
+          <input type="text" id="shipping_city" name="shipping_city" placeholder="San Diego" required/>
+        </div>
+        <div class="shipping-state-div">
+          <label for="shipping_state">State:</label>
+          <input type="text" id="shipping_state" name="shipping_state" placeholder="CA" required/>
+        </div>
+        <div class="shipping-country-div">
+          <label for="shipping_country">Country:</label>
+          <input type="text" id="shipping_country" name="shipping_country" placeholder="U.S." required/>
+        </div>
+        <div class="zipcode-div">
+          <label for="shipping_zipcode">Zipcode:</label>
+          <input type="text" id="shipping_zipcode" name="shipping_zipcode" placeholder="12345" required/>
+        </div>
+        <div class="phone-number-div">
+          <label for="phone_number">Phone Number:</label>
+          <input type="text" id="phone_number" name="phone_number" placeholder="1 234 567 8910" required/>
+        </div>
+        <div class="card-number-div">
+          <label for="card_number">Card Number:</label>
+          <input type="text" id="card_number" name="card_number" placeholder="1234 1234 1234 1234" required maxlength="16"/>
+        </div>
+        <div class="card-holder-div">
+          <label for="card_holder">Card Holder:</label>
+          <input type="text" id="card_holder" name="card_holder" placeholder="John Doe" required/>
+        </div>
+        <div class="card-expiry-div">
+          <label for="card_expiry_date">Exp. Date:</label>
+          <input type="text" id="card_expiry_date" name="card_expiry_date" placeholder="12/25" required maxlength="5"/>
+        </div>
+        <div class="card-cvv-div">
+          <label for="card_cvv">CVV:</label>
+          <input type="text" id="card_cvv" name="card_cvv" placeholder="1234" required maxlength="4"/>
+        </div>
+      </div>
+
+      <ul class="list-container">
+        {% for post in selected_items %}
+          <li>
+            <div class="post-title-div">
+              <h2 class="post-title">{{ post.title }}</h2>
+            </div>
+            <div class="post-price-div">
+              <p class="post-price">${{ post.price }}</p>
+              <div class="post-quantity-div">
+                <label for="quantity_{{ post.id }}">Quantity</label>
+                <input type="number" id="quantity_{{ post.id }}" name="quantity" value="1" placeholder="1" required/>
+              </div>
+            </div>
+            {% if post.cover_photo_url.endswith(('.jpg', '.jpeg', '.png', '.PNG', '.gif')) %}
+              <img src="/uploads/{{ post.cover_photo_url }}">
+            {% else %}
+              No preview available.
+            {% endif %}
+            <!-- Ensure each quantity input has a unique ID -->
+            <input type="hidden" name="selected_items[]" value="{{ post.id }}">
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="submit-div">
+        <input class="place-order" type="submit" value="Place Order">
+      </div>
+
+    </form>
+
+  </div>
+
+</body>
+</html>

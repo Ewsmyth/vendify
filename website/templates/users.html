@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users</title>
+  <link rel="stylesheet" href="/project_static/css/users.css">
+</head>
+<body {% if current_user and current_user.theme %} class="dark-mode"{% endif %}>
+
+  <div class="navbar">
+    <div class="adminpage-div">
+      <a href="{{ url_for('admin.adminpage', username=username) }}">Back</a>
+    </div>
+    <div class="createuser-div">
+      <a href="{{ url_for('admin.createuser', username=username) }}">Create User</a>
+    </div>
+  </div>
+
+  <div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        {% if category == 'error' %}
+          <div class="flash-message error">
+            <div>
+              <img src="/project_static/icons/error_flash.png" alt="Error Flash PNG">
+              <h3>Error!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'success' %}
+          <div class="flash-message success">
+            <div>
+              <img src="/project_static/icons/success_flash.png" alt="Success Flash PNG">
+              <h3>Success!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'warning' %}
+          <div class="flash-message warning">
+            <div>
+              <img src="/project_static/icons/warning_flash.png" alt="Warning Flash PNG">
+              <h3>Warning!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <div class="container">
+    <div class="table-div">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Active</th>
+            <th>Authority</th>
+            <th>Joined</th>
+            <th>Last Update</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+            <tr>
+              <td>{{ user.id }}</td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.password }}</td>
+              <td>
+                <form class="update-form status-form" method="POST" action="{{ url_for('admin.update_active', username=username, user_id=user.id) }}">
+                  <select name="is_active">
+                    <option value="1" {% if user.is_active %} selected {% endif %}>Active</option>
+                    <option value="0" {% if not user.is_active %} selected {% endif %}>Inactive</option>
+                  </select>
+                  <button type="submit">Update</button>
+                </form>
+              </td>
+              <td>
+                <form class="update-form auth-form" method="POST" action="{{ url_for('admin.update_authority', username=username, user_id=user.id) }}">
+                  <select name="authority">
+                    <option value="user" {% if user.authority == 'user' %} selected {% endif %}>User</option>
+                    <option value="vendor" {% if user.authority == 'vendor' %} selected {% endif %}>Vendor</option>
+                    <option value="admin" {% if user.authority == 'admin' %} selected {% endif %}>Admin</option>
+                  </select>
+                  <button type="submit">Update</button>
+              </form>
+              </td>
+              <td>{{ user.created_at }}</td>
+              <td>{{ user.updated_at }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart</title>
+  <link rel="stylesheet" href="/project_static/css/cart.css">
+</head>
+<body {% if current_user and current_user.theme %} class="dark-mode"{% endif %}>
+
+  <div class="banner-top">
+    <h2>Cart Total: ${{ '%.2f'|format(cart_total) }}</h2>
+  </div>
+
+  <div class="content-container">
+
+    <div class="flash-container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          {% if category == 'error' %}
+            <div class="flash-message error">
+              <div>
+                <img src="/project_static/icons/error_flash.png" alt="Error Flash PNG">
+                <h3>Error!</h3>{{ message }}
+              </div>
+              <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+          {% elif category == 'success' %}
+            <div class="flash-message success">
+              <div>
+                <img src="/project_static/icons/success_flash.png" alt="Success Flash PNG">
+                <h3>Success!</h3>{{ message }}
+              </div>
+              <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+          {% elif category == 'warning' %}
+            <div class="flash-message warning">
+              <div>
+                <img src="/project_static/icons/warning_flash.png" alt="Warning Flash PNG">
+                <h3>Warning!</h3>{{ message }}
+              </div>
+              <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endwith %}
+    </div>
+
+    <form action="{{ url_for('user.order_confirmation', username=username) }}" method="POST">
+
+      <div class="input-div">
+        <input type="submit" value="Checkout">
+      </div>
+
+      <ul>
+        {% for post in posts %}
+        <li>
+          <div class="checkbox-div">
+            <div class="checkbox-slider">
+              <input type="checkbox" name="selected_items[]" id="checkbox{{ loop.index }}" value="{{ post.id }}">
+              <label class="slider" for="checkbox{{ loop.index }}"></label>
+            </div>
+          </div>
+    
+          <div class="product-info">
+            <a href="{{ url_for('user.product', username=username, post_id=post.id) }}">
+              <h3>{{ post.title }}</h3>
+              <p>${{ post.price }}</p>
+              {% if post.cover_photo_url.endswith(('.jpg', '.jpeg', '.png', '.PNG', '.gif')) %}
+              <img src="/uploads/{{ post.cover_photo_url }}" alt="Product Image">
+              {% else %}
+              No preview available.
+              {% endif %}
+            </a>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    
+      <div class="input-div">
+        <input type="submit" value="Checkout">
+      </div>
+    
+    </form>
+    
+
+  </div>
+
+  <div class="navbar">
+
+    <div class="home-div">
+      <a href="{{ url_for('user.home', username=username) }}"></a>
+    </div>
+    <div class="cart-div">
+      <a href="{{ url_for('user.cart', username=username) }}"></a>
+    </div>
+    <div class="account-div">
+      <a href="{{ url_for('user.account', username=username) }}"></a>
+    </div>
+    
+  </div>
+
+</body>
+</html>

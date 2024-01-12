@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vendor</title>
+  <link rel="stylesheet" href="/project_static/css/vendorpage.css">
+</head>
+<body {% if current_user and current_user.theme %} class="dark-mode"{% endif %}>
+
+  <div class="navbar">
+
+    <div class="logout-div">
+      <a href="{{ url_for('auth.logout')}}">Logout</a>
+    </div>
+    <div class="post-div">
+      <a href="{{ url_for('vendor.post', username=username) }}">Post</a>
+    </div>
+    <div class="sales-div">
+      <a href="{{ url_for('vendor.sales', username=username) }}">Sales</a>
+    </div>
+    <div class="orders-div">
+      <a href="{{ url_for('vendor.orders', username=username) }}">Orders</a>
+    </div>
+    <div class="account-div">
+      <a href="{{ url_for('vendor.account', username=username) }}">Account</a>
+    </div>
+    <div class="vendorpage-div">
+      <a href="{{ url_for('vendor.vendorpage', username=username) }}">Home</a>
+    </div>
+
+  </div>
+
+  <div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        {% if category == 'error' %}
+          <div class="flash-message error">
+            <div>
+              <img src="/project_static/icons/error_flash.png" alt="Error Flash PNG">
+              <h3>Error!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'success' %}
+          <div class="flash-message success">
+            <div>
+              <img src="/project_static/icons/success_flash.png" alt="Success Flash PNG">
+              <h3>Success!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'warning' %}
+          <div class="flash-message warning">
+            <div>
+              <img src="/project_static/icons/warning_flash.png" alt="Warning Flash PNG">
+              <h3>Warning!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <div class="container">
+    <h1>Vendor Page</h1>
+  </div>
+
+</body>
+</html>

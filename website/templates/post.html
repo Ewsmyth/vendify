@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post</title>
+  <link rel="stylesheet" href="/project_static/css/post.css">
+</head>
+<body {% if current_user and current_user.theme %} class="dark-mode"{% endif %}>
+  
+  <div class="navbar">
+
+    <div class="logout-div">
+      <a href="{{ url_for('auth.logout')}}">Logout</a>
+    </div>
+    <div class="post-div">
+      <a href="{{ url_for('vendor.post', username=username) }}">Post</a>
+    </div>
+    <div class="sales-div">
+      <a href="{{ url_for('vendor.sales', username=username) }}">Sales</a>
+    </div>
+    <div class="orders-div">
+      <a href="{{ url_for('vendor.orders', username=username) }}">Orders</a>
+    </div>
+    <div class="account-div">
+      <a href="{{ url_for('vendor.account', username=username) }}">Account</a>
+    </div>
+    <div class="vendorpage-div">
+      <a href="{{ url_for('vendor.vendorpage', username=username) }}">Home</a>
+    </div>
+
+  </div>
+
+  <div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        {% if category == 'error' %}
+          <div class="flash-message error">
+            <div>
+              <img src="/project_static/icons/error_flash.png" alt="Error Flash PNG">
+              <h3>Error!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'success' %}
+          <div class="flash-message success">
+            <div>
+              <img src="/project_static/icons/success_flash.png" alt="Success Flash PNG">
+              <h3>Success!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'warning' %}
+          <div class="flash-message warning">
+            <div>
+              <img src="/project_static/icons/warning_flash.png" alt="Warning Flash PNG">
+              <h3>Warning!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <div class="container">
+    <div class="form-div">
+      <div class="post-product">
+        <h3>Post a new product</h3>
+      </div>
+      <form action="{{ url_for('vendor.post', username=username) }}" method="POST" enctype="multipart/form-data">
+        <div class="title-div">
+          <label for="title">Title:</label>
+          <input type="text" name="title" placeholder="What is the name of your product?">
+        </div>
+        <div class="description-div">
+          <label for="description">Description:</label>
+          <textarea name="description" placeholder="Descripe your product's specifications..."></textarea>
+        </div>
+        <div class="quantity-div">
+          <label for="quantity">Stock:</label>
+          <input type="number" name="quantity" placeholder="How many items do you have in stock?">
+        </div>
+        <div class="category-div">
+          <label for="category">Category:</label>
+          <select name="category" id="category">
+            <option value="" disabled selected>*Category</option>
+            <option value="antiques">Antiques</option>
+            <option value="appliances">Appliances</option>
+            <option value="atv">ATV/UTV</option>
+            <option value="autoparts">Auto Parts</option>
+            <option value="baby">Baby</option>
+            <option value="bikes">Bikes</option>
+            <option value="boats">Boats</option>
+            <option value="books">Books</option>
+            <option value="cars">Cars</option>
+            <option value="trucks">Trucks</option>
+            <option value="electronics">Electronics</option>
+            <option value="furniture">Furniture</option>
+            <option value="household">Household</option>
+            <option value="motorcycles">Motorcycle</option>
+            <option value="music">Music</option>
+            <option value="sporting">Sporting</option>
+            <option value="toys">Toys</option>
+            <option value="tools">Tools</option>
+            <option value="trailers">Trailers</option>
+          </select>
+        </div>
+        <div class="price-div">
+          <label for="price">Price:</label>
+          <input type="number" name="price" id="price" placeholder="$0.00" step="0.01" required>
+        </div>
+
+        <div class="cover-photo-url-div">
+          <label for="cover_photo_url">Cover Photo:</label>
+          <div class="file-upload-div" id="fileUploadDiv">
+            <span class="upload-file-span">Add a cover photo</span>
+          </div>
+          <input type="file" name="cover_photo_url" id="cover_photo" accept="image/*" required>
+          <img src="" alt="Uploaded Image" id="displayedImage" style="display: none;">
+        </div>
+
+        <div class="media-div">
+          <label for="media">Product <br>Photos/Videos:</label>
+          <div class="media-upload-div" id="mediaUploadDiv">
+            <span class="upload-media-span">Add photos and videos</span>
+          </div>
+          <input type="file" name="media_files" id="media_files" accept="image/*, video/*" multiple>
+          <div id="displayMedia" style="display: none;"></div>
+        </div>
+
+        <input class="submit-form-btn" type="submit" value="Share">
+      </form>  
+    </div>
+
+    <div class="divider-div">
+      <h1>Your products</h1>
+    </div>
+
+    <div class="table-div">
+      <table>
+        <thead>
+          <tr>
+            <th class="th-title">Title</th>
+            <th class="th-cover-photo">Cover Photo</th>
+            <th class="th-price">Price</th>
+            <th class="th-description">Description</th>
+            <th class="th-quantity">Quantity</th>
+            <th class="th-category">Category</th>
+            <th class="th-media">Media</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for post in posts %}
+            <tr>
+              <td>
+                <div class="post-title-div">
+                  <h3>{{ post.title }}</h3>
+                </div>
+              </td>
+              <td>
+                <div class="post-cover-photo-div">
+                  {% if post.cover_photo_url.endswith(('.jpg', '.jpeg', '.png', '.PNG', '.gif')) %}
+                    <img src="/uploads/{{ post.cover_photo_url }}" width="100">
+                  {% else %}
+                    No preview available.
+                  {% endif %}
+                </div>
+              </td>
+              <td>
+                <div class="post-price-div">
+                  <h5>${{ post.price }}</h5>
+                </div>
+              </td>
+              <td>
+                <div class="post-description-div">
+                  <p>{{ post.description }}</p>
+                </div>
+              </td>
+              <td>
+                <div class="post-quantity-div">
+                  <h5>{{ post.quantity }}</h5>
+                </div>
+              </td>
+              <td>
+                <div class="post-category-div">
+                  <h5>{{ post.category }}</h5>
+                </div>
+              </td>
+              <td class="media-td">
+                <div class="post-media-div" data-post-id="{{ post.id }}">
+                  <div class="media-slider">
+                    {% for media in post.media %}
+                      {% if media.media_url.endswith(('.jpg', '.jpeg', '.png', '.PNG', '.gif')) %}
+                        <!-- Display image -->
+                        <img src="/uploads/{{ media.media_url }}" width="320">
+                      {% elif media.media_url.endswith(('.mp4', '.webm', '.ogg')) %}
+                        <!-- Display video -->
+                        <video width="320" height="240" controls>
+                          <source src="/uploads/{{ media.media_url }}" type="video/mp4">
+                          Your browser does not support the video tag.
+                        </video>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                  <button class="prev-button">Prev</button>
+                  <button class="next-button">Next</button>
+                </div>
+              </td>                        
+            </tr>
+          {% endfor %}
+        </tbody>    
+      </table>
+    </div>
+  </div>
+
+  <script src="/project_static/js/post.js"></script>
+
+</body>
+</html>

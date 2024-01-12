@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin</title>
+  <link rel="stylesheet" href="/project_static/css/adminpage.css">
+</head>
+<body {% if current_user and current_user.theme %} class="dark-mode"{% endif %}>
+
+  <div class="navbar">
+
+    <div class="logout-div">
+      <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </div>
+    <div class="users-div">
+      <a href="{{ url_for('admin.users', username=username) }}">Users</a>
+    </div>
+    <div class="account-div">
+      <a href="{{ url_for('admin.account', username=username) }}">Account</a>
+    </div>
+
+  </div>
+
+  <div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        {% if category == 'error' %}
+          <div class="flash-message error">
+            <div>
+              <img src="/project_static/icons/error_flash.png" alt="Error Flash PNG">
+              <h3>Error!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'success' %}
+          <div class="flash-message success">
+            <div>
+              <img src="/project_static/icons/success_flash.png" alt="Success Flash PNG">
+              <h3>Success!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'warning' %}
+          <div class="flash-message warning">
+            <div>
+              <img src="/project_static/icons/warning_flash.png" alt="Warning Flash PNG">
+              <h3>Warning!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <div class="window">
+    <div class="log-window">
+      <div class="window-title">
+        <h2>Logged events</h2>
+      </div>      
+      <table>
+        <thead>
+          <th class="description-head">Description</th>
+          <th class="timestamp-head">Time Stamp</th>
+        </thead>
+        <tbody>
+          {% for event in recent_events %}
+            <tr>
+              <td>{{ event.event_description }}</td>
+              <td class="timestamp">{{ event.timestamp_formatted }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+</body>
+</html>

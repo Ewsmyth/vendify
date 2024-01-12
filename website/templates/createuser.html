@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create User</title>
+  <link rel="stylesheet" href="/project_static/css/createuser.css">
+</head>
+<body {% if current_user and current_user.theme %} class="dark-mode"{% endif %}>
+  
+  <div class="navbar">
+    <div class="users-div">
+      <a href="{{ url_for('admin.users', username=username) }}">Back</a>
+    </div>
+  </div>
+
+  <div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        {% if category == 'error' %}
+          <div class="flash-message error">
+            <div>
+              <img src="/project_static/icons/error_flash.png" alt="Error Flash PNG">
+              <h3>Error!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'success' %}
+          <div class="flash-message success">
+            <div>
+              <img src="/project_static/icons/success_flash.png" alt="Success Flash PNG">
+              <h3>Success!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% elif category == 'warning' %}
+          <div class="flash-message warning">
+            <div>
+              <img src="/project_static/icons/warning_flash.png" alt="Warning Flash PNG">
+              <h3>Warning!</h3>{{ message }}
+            </div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <div class="container">
+    <h3>Create New User</h3>
+    <form class="adduser-form" method="post" action="{{ url_for('admin.createuser', username=current_user.username) }}" enctype="multipart/form-data">
+      <input type="text" id="username" name="username" placeholder="*Username">
+      <input type="password" id="password1" name="password1" placeholder="*Password">
+      <input type="password" id="password2" name="password2" placeholder="*Confirm Password">
+      <select id="authority" name="authority">
+        <option value="" disabled selected>*Authority</option>
+        <option value="user">User</option>
+        <option value="vendor">Vendor</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button type="submit">Create User</button>
+    </form>
+  </div>
+
+</body>
+</html>
