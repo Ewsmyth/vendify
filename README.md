@@ -75,8 +75,8 @@ sudo docker volume create vendify-uploads
 ##### Install Vendify
 ```
 sudo docker run -d -p 8686:8686 --restart=unless-stopped \
-    -v test-data:/var/lib/docker/volumes/vendify-data \
-    -v test-uploads:/var/lib/docker/volumes/vendify-uploads \
+    -v vendify-data:/var/lib/docker/volumes/vendify-data \
+    -v vendify-uploads:/var/lib/docker/volumes/vendify-uploads \
     vendify-image
 ```
 
@@ -106,7 +106,7 @@ sudo docker build -t vendify-image .
 ##### Install Vendify and mount it to your pre-existing volumes
 ```
 sudo docker run -d -p 8686:8686 --restart=unless-stopped \
-    -v test-data:/var/lib/docker/volumes/vendify-data \
-    -v test-uploads:/var/lib/docker/volumes/vendify-uploads \
+    -v vendify-data:/var/lib/docker/volumes/vendify-data \
+    -v vendify-uploads:/var/lib/docker/volumes/vendify-uploads \
     vendify-image
 ```
