@@ -7,8 +7,8 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . .
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Install any needed packages specified in requirements.txt, including Gunicorn
+RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
 # Expose the port Gunicorn will run on
 EXPOSE 8686
