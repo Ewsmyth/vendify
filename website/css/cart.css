@@ -1,9 +1,9 @@
 :root {
     --bg-color: rgb(240, 242, 245);
     --navbar-bg: rgb(172, 172, 172);
-    --home-img: url('/project_static/icons/home_before_lightmode.PNG');
-    --cart-img: url('/project_static/icons/shopcart_before_lightmode.PNG');
-    --account-img: url('/project_static/icons/account_before_lightmode.PNG');
+    --home-img: url('/project_static/icons/home_before_lightmode.png');
+    --cart-img: url('/project_static/icons/shopcart_before_lightmode.png');
+    --account-img: url('/project_static/icons/account_before_lightmode.png');
     --box-shadow: rgb(0, 0, 0);
     --black-white: rgb(0, 0, 0);
 }
@@ -11,9 +11,9 @@
 body.dark-mode {
     --bg-color: rgb(29, 29, 29);
     --navbar-bg: rgb(0, 0, 0);
-    --home-img: url('/project_static/icons/home_before_darkmode.PNG');
-    --cart-img: url('/project_static/icons/shopcart_before_darkmode.PNG');
-    --account-img: url('/project_static/icons/account_before_darkmode.PNG');
+    --home-img: url('/project_static/icons/home_before_darkmode.png');
+    --cart-img: url('/project_static/icons/shopcart_before_darkmode.png');
+    --account-img: url('/project_static/icons/account_before_darkmode.png');
     --box-shadow: rgb(136, 136, 136);
     --black-white: rgb(255, 255, 255);
 }

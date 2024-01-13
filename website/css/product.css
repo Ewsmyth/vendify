@@ -1,13 +1,13 @@
 :root {
     --bg-color: rgb(240, 242, 245);
-    --back-img: url('/project_static/icons/back_before_lightmode.PNG');
+    --back-img: url('/project_static/icons/back_before_lightmode.png');
     --black-white: rgb(0, 0, 0);
     --box-shadow: rgb(0, 0, 0);
 }
 
 body.dark-mode {
     --bg-color: rgb(29, 29, 29);
-    --back-img: url('/project_static/icons/back_before_darkmode.PNG');
+    --back-img: url('/project_static/icons/back_before_darkmode.png');
     --black-white: rgb(255, 255, 255);
     --box-shadow: rgb(136, 136, 136);
 }
