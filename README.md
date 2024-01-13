@@ -79,3 +79,34 @@ sudo docker run -d -p 8686:8686 --restart=unless-stopped \
     -v test-uploads:/var/lib/docker/volumes/vendify-uploads \
     vendify-image
 ```
+
+## To update Vendify:
+#### Open Portainer and stop your Vendify server, then remove it, you can also remove the image since we will be creating a new image
+##### Type ls and make sure you see the "vendify" directory, if you don't navigate to where your vendify directory is. Do not open the directory.
+```
+ls
+```
+##### Remove the directory:
+```
+sudo rm -r vendify
+```
+##### Import the website code using Git:
+```
+sudo git clone https://github.com/Ewsmyth/vendify.git
+```
+##### Open the new vendify directory:
+```
+cd vendify
+```
+##### Build the docker image:
+```
+sudo docker build -t vendify-image .
+```
+##### Since you should already have volumes for your data storage you dont need to make volume again.
+##### Install Vendify and mount it to your pre-existing volumes
+```
+sudo docker run -d -p 8686:8686 --restart=unless-stopped \
+    -v test-data:/var/lib/docker/volumes/vendify-data \
+    -v test-uploads:/var/lib/docker/volumes/vendify-uploads \
+    vendify-image
+```
