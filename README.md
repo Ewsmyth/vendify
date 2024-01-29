@@ -60,7 +60,7 @@ sudo git clone https://github.com/Ewsmyth/vendify.git
 ```
 cd vendify
 ```
-##### The period is for if you are inside the "vendify" directory if you are not then you should replace this with the path to the Interactify directory
+##### The period is for if you are inside the "vendify" directory if you are not then you should replace this with the path to the vendify directory
 ```
 sudo docker build -t vendify-image .
 ```
