@@ -45,6 +45,7 @@ class Post(db.Model):
     price = db.Column(db.Float, nullable=False, default=0.0)
     cover_photo_url = db.Column(db.String(255), nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     media = db.relationship('Media', backref='post', lazy=True)
     cart = db.relationship('Cart', backref='post', lazy=True)
@@ -73,6 +74,8 @@ class Cart(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=1)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -90,6 +93,8 @@ class Order(db.Model):
     card_cvv = db.Column(db.Integer, nullable=False)
     order_status = db.Column(db.String(255), nullable=False, default='pending')
     total_amount = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     order_items = db.relationship('OrderItem', backref='order', lazy=True)
     purchaser = db.relationship('User', foreign_keys=[purchaser_id], backref='purchased_orders', lazy=True)
@@ -100,5 +105,7 @@ class OrderItem(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=1)
     vendor_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     vendor = db.relationship('User', foreign_keys=[vendor_id], backref='sold_orders', lazy=True)
